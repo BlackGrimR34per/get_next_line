@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yosherau <yosherau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/17 22:32:45 by yosherau          #+#    #+#             */
-/*   Updated: 2024/11/18 16:22:49 by yosherau         ###   ########.fr       */
+/*   Created: 2024/11/18 16:22:03 by yosherau          #+#    #+#             */
+/*   Updated: 2024/11/18 16:22:36 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_next_line(int fd)
+int	main(void)
 {
-	printf("%d", BUFFER_SIZE);
+	get_next_line(10);
 }
