@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/18 16:22:03 by yosherau          #+#    #+#             */
-/*   Updated: 2024/11/21 11:51:14 by yosherau         ###   ########.fr       */
+/*   Created: 2024/11/21 16:56:13 by yosherau          #+#    #+#             */
+/*   Updated: 2024/11/26 15:46:52 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-int main(void)
+int	main(void)
 {
-    int fd = open("./a", O_RDONLY);
-    if (fd < 0)
-        return (1);
+	int		fd;
+	char	*line;
 
-    char *line;
-    while ((line = get_next_line(fd)))
-    {
-        printf("%s", line);
-        free(line);
-    }
-    close(fd);
-    return (0);
+	fd = open("./a", O_RDONLY);
+
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+
+	return (0);
 }

@@ -6,11 +6,12 @@
 /*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 22:33:17 by yosherau          #+#    #+#             */
-/*   Updated: 2024/11/21 11:39:55 by yosherau         ###   ########.fr       */
+/*   Updated: 2024/11/26 11:27:51 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 char	*ft_strappend(char *dest, char *src)
 {
@@ -19,22 +20,20 @@ char	*ft_strappend(char *dest, char *src)
 	char	*end;
 
 	if (!src)
-		return (NULL);
+		return (dest);
+	index = 0;
+	end = ft_strchr(src, '\n');
+	if (!end)
+		end = src + ft_strlen(src);
 	else
-	{
-		index = 0;
-		end = ft_strchr(src, '\n');
-		string = (char *)malloc(ft_strlen(dest) + (end - src) + 1);
-		while (*dest || (*src && src != end))
-		{
-			if (*dest)
-				string[index++] = *dest++;
-			else
-				string[index++] = *src++;
-		}
-		string[index] = '\0';
-		return (string);
-	}
+		end++;
+	string = (char *)malloc(ft_strlen(dest) + (end - src) + 1);
+	while (*dest)
+		string[index++] = *dest++;
+	while (src < end)
+		string[index++] = *src++;
+	string[index] = '\0';
+	return (string);
 }
 
 size_t	ft_strlen(char *str)
@@ -59,4 +58,23 @@ char	*ft_strchr(char *s, int c)
 	if (*s == c)
 		return ((char *)s);
 	return (NULL);
+}
+
+char	*ft_strdup(char *s1)
+{
+	int		i;
+	char	*dest;
+	size_t	length;
+
+	if (s1 == NULL)
+		return (NULL);
+	i = -1;
+	length = ft_strlen(s1);
+	dest = (char *)malloc((sizeof(char) * length) + 1);
+	if (!dest)
+		return (0);
+	while (s1[++i])
+		dest[i] = s1[i];
+	dest[i] = '\0';
+	return (dest);
 }
