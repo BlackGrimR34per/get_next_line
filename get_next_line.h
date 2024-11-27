@@ -6,7 +6,7 @@
 /*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 10:06:23 by yosherau          #+#    #+#             */
-/*   Updated: 2024/11/26 15:42:08 by yosherau         ###   ########.fr       */
+/*   Updated: 2024/11/26 19:49:46 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ char	*ft_strappend(char *dest, char *src);
 size_t	ft_strlen(char *str);
 char	*ft_strdup(char *s1);
 char	*ft_strchr(char *s, int c);
+size_t	ft_strlcpy(char *dst, char *src, size_t dstsize);
 
 #endif
