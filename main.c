@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 16:56:13 by yosherau          #+#    #+#             */
-/*   Updated: 2024/11/26 19:36:12 by yosherau         ###   ########.fr       */
+/*   Created: 2024/11/28 02:49:07 by yosherau          #+#    #+#             */
+/*   Updated: 2024/11/30 09:48:46 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ int	main(void)
 	int		fd;
 	char	*line;
 
-	fd = open("./a", O_RDONLY);
+	fd = open("./file", O_RDONLY);
 	line = get_next_line(fd);
-	while (line)
+	while (line != NULL)
 	{
 		printf("%s", line);
 		free(line);
