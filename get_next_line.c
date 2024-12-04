@@ -1,153 +1,125 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/28 01:53:40 by yosherau          #+#    #+#             */
-/*   Updated: 2024/11/30 20:33:36 by yosherau         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+/* get_next_line.c */
 #include "get_next_line.h"
+#include <stdlib.h>
+#include <unistd.h>
 
-/**
- * TODO: Remove stdio
- * TODO: Fix malloc issue due to get_remainder
- */
-#include <stdio.h>
+static char	*ft_strjoin_free(char *s1, char *s2)
+{
+	char	*result;
+	size_t	len1;
+	size_t	len2;
 
-static char	*get_remainder(char *buffer);
-static char	*read_into_buffer(char *buffer, int fd);
-static char	*handle_remainder(char **remainder);
+	if (!s1 && *s2)
+		return (ft_strdup(s2));
+	if (!s1 || !s2)
+		return (NULL);
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	result = malloc(len1 + len2 + 1);
+	if (!result)
+	{
+		free(s1);
+		return (NULL);
+	}
+	ft_memcpy(result, s1, len1);
+	ft_memcpy(result + len1, s2, len2);
+	result[len1 + len2] = '\0';
+	free(s1);
+	return (result);
+}
+
+static char	*extract_line(char *buffer)
+{
+	char	*line;
+	int		i;
+
+	if (!buffer)
+		return (NULL);
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	if (buffer[i] == '\n')
+		i++;
+	line = malloc(i + 1);
+	if (!line)
+		return (NULL);
+	ft_memcpy(line, buffer, i);
+	line[i] = '\0';
+	return (line);
+}
+
+static char	*update_buffer(char *buffer)
+{
+	char	*new_buffer;
+	int		i;
+	int		j;
+
+	if (!buffer)
+		return (NULL);
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	if (!buffer[i] || !buffer[i + 1])
+	{
+		free(buffer);
+		return (NULL);
+	}
+	new_buffer = malloc(ft_strlen(buffer + i + 1) + 1);
+	if (!new_buffer)
+	{
+		free(buffer);
+		return (NULL);
+	}
+	i++;
+	j = 0;
+	while (buffer[i])
+		new_buffer[j++] = buffer[i++];
+	new_buffer[j] = '\0';
+	free(buffer);
+	return (new_buffer);
+}
 
 char	*get_next_line(int fd)
 {
-	char		buffer[BUFFER_SIZE + 1];
-	char		*output;
-	static char	*remainder;
+	static char	*buffer[OPEN_MAX];
+	char		*line;
+	char		*read_buffer;
+	ssize_t		bytes_read;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= OPEN_MAX)
 		return (NULL);
-	output = NULL;
-	if (remainder)
-	{
-		output = handle_remainder(&remainder);
-		return (output);
-	}
-	output = read_into_buffer(buffer, fd);
-	remainder = get_remainder(buffer);
-	return (output);
-}
-
-/**
- * @brief Reads data from a file descriptor and updates the buffer.
- *
- * This function reads data from the given file descriptor `fd` and fills
- * the provided buffer. It also extracts and returns a line from the buffer
- * if available.
- *
- * @param buffer A pointer to the buffer where the read data will be stored.
- *               The buffer must be pre-allocated.
- * @param fd The file descriptor to read data from.
- *
- * @return A pointer to a dynamically allocated string containing the line read
- *         from the buffer, or NULL if an error occurs or no line is available.
- *
- * @note The caller is responsible for freeing the memory allocated for the
- *       returned line.
- */
-static char	*read_into_buffer(char *buffer, int fd)
-{
-	size_t	bytes_read;
-	char	*output;
-	char	*temp;
-
-	bytes_read = read(fd, buffer, BUFFER_SIZE);
-	output = NULL;
+	read_buffer = malloc(BUFFER_SIZE + 1);
+	if (!read_buffer)
+		return (NULL);
+	bytes_read = 1;
 	while (bytes_read > 0)
 	{
-		buffer[bytes_read] = '\0';
-		temp = output;
-		output = ft_strappend(output, buffer);
-		if (temp)
-			free(temp);
-		if (ft_strchr(buffer, NEWLINE))
+		bytes_read = read(fd, read_buffer, BUFFER_SIZE);
+		if (bytes_read < 0)
+		{
+			free(read_buffer);
+			free(buffer[fd]);
+			buffer[fd] = NULL;
+			return (NULL);
+		}
+		read_buffer[bytes_read] = '\0';
+		buffer[fd] = ft_strjoin_free(buffer[fd], read_buffer);
+		if (ft_strchr(buffer[fd], '\n'))
 			break ;
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == 0)
+			break ;
 	}
-	return (output);
-}
+	free(read_buffer);
 
-/**
- * @brief Reads data from the buffer and updates the remainder.
- *
- * This function reads data from the buffer and finds the occurence of a newline,
- * if found the string following the newline is duplicated and assigned to
- * remainder
- *
- * @param buffer A pointer to the buffer where the read data will be stored.
- *
- * @return A pointer to a dynamically allocated string containing the string
- *         following the newline character
- *
- * @note The caller is responsible for freeing the memory allocated for the
- *       returned line.
- * !What if substr fails?
- */
-static char	*get_remainder(char *buffer)
-{
-	char	*output;
-	char	*ptr;
-
-	ptr = ft_strchr(buffer, NEWLINE);
-	if (!ptr || !*(ptr + 1))
-		return (NULL);
-	output = ft_substr(buffer, (ptr - buffer) + 1, ft_strlen(ptr + 1));
-	return (output);
-}
-
-/**
- * @brief Returns the remainder of the string if present and sets new remainder
- *
- * This function reads data from the remainder and finds the occurence of a
- * newline if found the string is returned and assigned to output the
- * remaining is duplicated and assigned to remainder
- *
- * @return A pointer to a dynamically allocated string containing the string
- *         following the newline character
- *
- * @note The caller is responsible for freeing the memory allocated for the
- *       returned line.
- * !STILL HAS MEM LEAKS, DOESN'T RETURN NULL IF REMAINDER IS EMPTY
- */
-static char	*handle_remainder(char **remainder)
-{
-	char	*newline_ptr;
-	char	*temp;
-	char	*output;
-
-	if (!*remainder)
-		return (NULL);
-	newline_ptr = ft_strchr(*remainder, NEWLINE);
-	if (!newline_ptr)
+	// If buffer is empty or just whitespace, return NULL
+	if (!buffer[fd] || buffer[fd][0] == '\0')
 	{
-		output = ft_substr(*remainder, 0, ft_strlen(*remainder));
-		free(*remainder);
-		*remainder = NULL;
-		return (output);
+		free(buffer[fd]);
+		buffer[fd] = NULL;
+		return (NULL);
 	}
-	output = ft_substr(*remainder, 0, newline_ptr - *remainder + 1);
-	temp = ft_substr(*remainder, newline_ptr - *remainder + 1,
-			ft_strlen(newline_ptr));
-	free(*remainder);
-	if (ft_strlen(temp) == 0)
-	{
-		*remainder = NULL;
-		free(temp);
-	}
-	else
-		*remainder = temp;
-	return (output);
+
+	line = extract_line(buffer[fd]);
+	buffer[fd] = update_buffer(buffer[fd]);
+	return (line);
 }
