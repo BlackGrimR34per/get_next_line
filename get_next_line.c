@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: yosherau <yosherau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:09:15 by ysheraun          #+#    #+#             */
-/*   Updated: 2024/12/08 18:17:12 by yosherau         ###   ########.fr       */
+/*   Updated: 2024/12/09 11:53:41 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*update_buffer(char *buffer);
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer[1024];
+	static char	*buffer[OPEN_MAX];
 	char		*line;
 	char		*read_buffer;
 
@@ -42,25 +42,20 @@ char	*get_next_line(int fd)
 
 static void	read_into_buffer(int fd, char **buffer, char *read_buffer)
 {
-	size_t	bytes_read;
+	ssize_t	bytes_read;
 
 	bytes_read = 1;
 	while (bytes_read > 0)
 	{
 		bytes_read = read(fd, read_buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
-		{
-			free(read_buffer);
-			free(buffer[fd]);
-			*buffer = NULL;
 			return ;
-		}
 		if (bytes_read == 0)
-			break ;
+			return ;
 		read_buffer[bytes_read] = '\0';
 		*buffer = ft_strjoin(*buffer, read_buffer);
 		if (!*buffer || ft_strchr(*buffer, '\n'))
-			break ;
+			return ;
 	}
 }
 

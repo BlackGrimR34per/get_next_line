@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: yosherau <yosherau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:05:28 by ysheraun          #+#    #+#             */
-/*   Updated: 2024/12/08 18:14:38 by yosherau         ###   ########.fr       */
+/*   Updated: 2024/12/09 11:29:13 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,3 @@ size_t	ft_strlen(char *s)
 		count++;
 	return (count);
 }
-
-

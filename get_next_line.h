@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: yosherau <yosherau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:05:47 by ysheraun          #+#    #+#             */
-/*   Updated: 2024/12/08 17:44:22 by yosherau         ###   ########.fr       */
+/*   Updated: 2024/12/09 11:53:48 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <limits.h>
+
+# ifndef OPEN_MAX
+#  define OPEN_MAX 1024
+# endif
 
 void	*ft_memcpy(void *dst, void *src, size_t n);
 char	*ft_strchr(char *s, int c);
