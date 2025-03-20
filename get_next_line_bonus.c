@@ -3,29 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yosherau <yosherau@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yosherau <yosherau@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:09:15 by ysheraun          #+#    #+#             */
-/*   Updated: 2025/01/26 16:25:27 by yosherau         ###   ########.fr       */
+/*   Updated: 2025/03/20 14:12:38 by yosherau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	read_into_buffer(int fd, char **buffer, char *read_buffer);
 static char	*extract_line(char *buffer);
 static char	*update_buffer(char *buffer);
 
-/**
- * @brief 	This function reads the next line from the specified 
- *			file descriptor and returns it. The line is delimited 
- 			by the newline character, and each call to this function
-			will return the next line in the file.
- * @param 	fd The file descriptor from which to read.
- * @return 	A string containing the next line from the file, including
- * 			 newline character.
- *         Returns NULL if the end of the file is reached or an error occurs.
- */
 char	*get_next_line(int fd)
 {
 	static char	*buffer[OPEN_MAX];
@@ -50,17 +40,6 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-/*
- *	@brief 	Reads from the file descriptor into a static 
-			buffer until a newline or the end of file is 
-			encountered. If no data has been read yet,
-			it initializes the buffer.
- * @param	fd	The file descriptor to read from.
- * @param	buffer	The static buffer that stores the read
- * 			data for the file.
- * @param	read_buffer	A temporary buffer used to store the
- *			raw data from the read operation.
- */
 static void	read_into_buffer(int fd, char **buffer, char *read_buffer)
 {
 	ssize_t	bytes_read;
@@ -78,15 +57,6 @@ static void	read_into_buffer(int fd, char **buffer, char *read_buffer)
 	}
 }
 
-/**
- * @brief	Extracts a single line from the static buffer 
- *			up to the newline character (if present), or 
- 			returns the entire buffer if no newline is found.
- * @param 	buffer The static buffer containing the data.
- * @return	A string containing the line extracted from the
- * 			buffer, up to the newline The string includes 
- * 			the newline character if present.
- */
 static char	*extract_line(char *buffer)
 {
 	char	*line;
@@ -108,16 +78,6 @@ static char	*extract_line(char *buffer)
 	return (line);
 }
 
-/**
- * @brief 	Updates the static buffer by removing the 
- *			portion of the buffer that has been consumed 
- 			(i.e., up to and including the first newline character).
- *        If no newline is found, it returns NULL as the buffer is empty.
- * @param buffer The static buffer that contains the remaining data.
- * @return	A new buffer containing the remaining data after the newline, 
- * 			or NULL if
- *         there is no remaining data.
- */
 static char	*update_buffer(char *buffer)
 {
 	char	*new_buffer;
